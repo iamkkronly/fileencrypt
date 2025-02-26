@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Encryption Generator</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&family=Playfair+Display:wght@700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: radial-gradient(circle, #f9e2e9, #fad0e1);
+            color: #5a3a4e;
+            min-height: 100vh;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .name {
+            position: absolute;
+            top: 20px;
+            font-size: 3.5rem;
+            font-weight: 700;
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient(45deg, #ff7eb9, #ff758c, #ff7eb9);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: text-glow 3s infinite alternate;
+            text-align: center;
+            width: 100%;
+            z-index: 10;
+        }
+
+        @keyframes text-glow {
+            0% {
+                text-shadow: 0 0 10px rgba(255, 126, 185, 0.5);
+            }
+            50% {
+                text-shadow: 0 0 20px rgba(255, 117, 140, 0.8);
+            }
+            100% {
+                text-shadow: 0 0 10px rgba(255, 126, 185, 0.5);
+            }
+        }
+
+        .container {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(15px);
+            border-radius: 20px;
+            padding: 2.5rem;
+            width: 90%;
+            max-width: 600px;
+            box-shadow: 0 0 30px rgba(255, 117, 140, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            animation: float 4s infinite ease-in-out;
+            text-align: center;
+            margin-top: 100px;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1.5rem;
+            font-weight: 700;
+            font-family: 'Playfair Display', serif;
+            background: linear-gradient(45deg, #ff7eb9, #ff758c);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: text-glow 3s infinite alternate;
+        }
+
+        .file-input {
+            margin: 2rem 0;
+        }
+
+        .file-input label {
+            display: inline-block;
+            background: linear-gradient(45deg, #ff7eb9, #ff758c);
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            font-weight: 600;
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(255, 117, 140, 0.3);
+        }
+
+        .file-input label:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(255, 117, 140, 0.5);
+        }
+
+        .file-input input[type="file"] {
+            display: none;
+        }
+
+        button {
+            background: linear-gradient(45deg, #ff7eb9, #ff758c);
+            color: #fff;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(255, 117, 140, 0.3);
+        }
+
+        button:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 20px rgba(255, 117, 140, 0.5);
+        }
+
+        .download-links {
+            margin-top: 2rem;
+            text-align: left;
+        }
+
+        .download-links a {
+            display: block;
+            color: #5a3a4e;
+            background: rgba(255, 255, 255, 0.8);
+            padding: 0.75rem 1rem;
+            border-radius: 10px;
+            margin: 0.5rem 0;
+            text-decoration: none;
+            transition: background 0.3s ease, transform 0.3s ease;
+            border: 1px solid rgba(255, 117, 140, 0.2);
+        }
+
+        .download-links a:hover {
+            background: rgba(255, 255, 255, 1);
+            transform: translateX(10px);
+        }
+
+        .key-info {
+            background: rgba(255, 255, 255, 0.8);
+            padding: 1rem;
+            border-radius: 10px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            word-break: break-all;
+            border: 1px solid rgba(255, 117, 140, 0.2);
+        }
+
+        .key-info strong {
+            color: #ff7eb9;
+        }
+
+        .footer {
+            margin-top: 2rem;
+            font-size: 0.8rem;
+            color: rgba(90, 58, 78, 0.7);
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="name">Kaustav</div>
+    <div class="container">
+        <h1>File Encryption Generator</h1>
+        <div class="file-input">
+            <label for="fileInput">Choose Files</label>
+            <input type="file" id="fileInput" multiple>
+        </div>
+        <button onclick="encryptFiles()">Encrypt Files</button>
+        <div class="download-links" id="downloadLinks"></div>
+        <div class="footer">
+            Your files are encrypted securely in your browser. No data is uploaded to any server.
+        </div>
+    </div>
+
+    <script>
+        async function encryptFiles() {
+            const files = document.getElementById('fileInput').files;
+            const downloadLinks = document.getElementById('downloadLinks');
+            downloadLinks.innerHTML = ''; // Clear previous results
+
+            if (!files.length) {
+                alert('Please select files');
+                return;
+            }
+
+            for (let file of files) {
+                const reader = new FileReader();
+                reader.onload = async function(e) {
+                    // Generate random AES-256 key and IV
+                    const key = CryptoJS.lib.WordArray.random(256/8);
+                    const iv = CryptoJS.lib.WordArray.random(128/8);
+                    
+                    // Convert file data to WordArray
+                    const arrayBuffer = e.target.result;
+                    const wordArray = CryptoJS.lib.WordArray.create(new Uint8Array(arrayBuffer));
+
+                    // Encrypt the file content
+                    const encrypted = CryptoJS.AES.encrypt(wordArray, key, {
+                        iv: iv,
+                        padding: CryptoJS.pad.Pkcs7
+                    });
+
+                    // Combine IV and ciphertext
+                    const encryptedData = iv.concat(encrypted.ciphertext);
+                    
+                    // Create download link
+                    const downloadLink = document.createElement('a');
+                    const encryptedBase64 = CryptoJS.enc.Base64.stringify(encryptedData);
+                    downloadLink.download = file.name + '.enc';
+                    downloadLink.href = 'data:application/octet-stream;base64,' + encryptedBase64;
+                    downloadLink.innerHTML = `Download ${file.name}.enc`;
+                    downloadLink.className = 'download-link';
+
+                    // Create key information
+                    const keyInfo = document.createElement('div');
+                    keyInfo.className = 'key-info';
+                    keyInfo.innerHTML = `
+                        <strong>File:</strong> ${file.name}<br>
+                        <strong>AES Key (hex):</strong> ${key.toString()}<br>
+                        <strong>IV (hex):</strong> ${iv.toString()}
+                    `;
+
+                    downloadLinks.appendChild(downloadLink);
+                    downloadLinks.appendChild(keyInfo);
+                };
+                reader.readAsArrayBuffer(file);
+            }
+        }
+    </script>
+</body>
+</html>
